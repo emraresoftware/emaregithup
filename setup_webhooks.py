@@ -4,16 +4,18 @@ GitHub Webhook Kurulum Scripti
 ===============================
 emraresoftware hesabındaki tüm repolara push webhook ekler.
 
-Webhook → POST http(s)://<server>:8112/github-webhook
-        → webhook_receiver.py dinler
-        → EmareCloud paneline iletir
-        → Otomatik deploy tetiklenir
+Webhook → POST https://emarecloud.tr/api/deploy/webhook/<secret>
+        → EmareCloud paneli doğrudan alır
+        → Otomatik deploy tetiklenir (auto_deploy=true olan projeler)
 
 Kullanım:
   python3 setup_webhooks.py                    # Listeleme (dry-run)
   python3 setup_webhooks.py --apply            # Webhook ekle
   python3 setup_webhooks.py --list             # Mevcut webhook'ları listele
   python3 setup_webhooks.py --delete-all       # Tüm webhook'ları sil
+
+  # Özel URL ve secret ile:
+  python3 setup_webhooks.py --apply --url "https://emarecloud.tr/api/deploy/webhook/emare-deploy-secret-2025" --secret "emare-deploy-secret-2025"
 """
 
 import json
@@ -38,12 +40,25 @@ if not GITHUB_TOKEN:
 GITHUB_USER = "emraresoftware"
 API_BASE = "https://api.github.com"
 
-# Webhook ayarları
+# Webhook ayarları — Doğrudan EmareCloud paneline gider
 WEBHOOK_SECRET = os.getenv("GITHUB_WEBHOOK_SECRET", "emare-deploy-secret-2025")
-# Sunucu IP/domain — deploy sırasında güncellenmeli
-WEBHOOK_SERVER = os.getenv("WEBHOOK_SERVER", "localhost")
-WEBHOOK_PORT = int(os.getenv("WEBHOOK_PORT", "8112"))
-WEBHOOK_URL = f"http://{WEBHOOK_SERVER}:{WEBHOOK_PORT}/github-webhook"
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://emarecloud.tr/api/deploy/webhook/emare-deploy-secret-2025")
+
+# CLI argümanlarından --url ve --secret oku
+def _cli_arg(flag):
+    """CLI'dan --flag VALUE çiftini oku."""
+    if flag in sys.argv:
+        idx = sys.argv.index(flag)
+        if idx + 1 < len(sys.argv):
+            return sys.argv[idx + 1]
+    return None
+
+_cli_url = _cli_arg("--url")
+_cli_secret = _cli_arg("--secret")
+if _cli_url:
+    WEBHOOK_URL = _cli_url
+if _cli_secret:
+    WEBHOOK_SECRET = _cli_secret
 
 
 def api(method, endpoint, data=None):
@@ -215,7 +230,6 @@ def main():
 
     if mode == "dry-run":
         print("💡 Uygulamak için: python3 setup_webhooks.py --apply")
-        print("⚠️  WEBHOOK_SERVER değişkenini sunucu IP/domain ile güncelleyin!")
 
 
 if __name__ == "__main__":
