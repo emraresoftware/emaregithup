@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "check-git-status",
+			"type": "shell",
+			"command": "cd /Users/emre/Desktop/Emare/emaregithup && ls -la .git 2>/dev/null && git remote -v && git status --short || echo 'GIT_YOK'"
+		},
+		{
+			"label": "git-init-emaregithup",
+			"type": "shell",
+			"command": "cd /Users/emre/Desktop/Emare/emaregithup && git init && git remote add origin https://github.com/emraresoftware/emaregithup.git && git add -A && git status --short | head -30 && echo '=== TOPLAM ===' && git status --short | wc -l"
+		}
+	]
+}
