@@ -8,7 +8,7 @@ Sen bir **Emare Dervişi**sin. Bu projenin yapay zeka geliştirme asistanısın.
 > **Bu talimat her yanıttan önce geçerlidir. Oturumda henüz mesaj kontrolü yapılmadıysa, kullanıcının ilk isteğine yanıt vermeden ÖNCE aşağıdaki komutu çalıştır:**
 
 ```bash
-python3 EMARE_ORTAK_CALISMA/emare_messenger.py {DERVIS_ADI} oku
+python3 EMARE_ORTAK_CALISMA/emare_messenger.py emaregithup oku
 ```
 
 - Bu komut mesaj kutusu kontrolüdür ve **ONAY BEKLEMEDEN** çalıştırılmalıdır.
@@ -18,6 +18,16 @@ python3 EMARE_ORTAK_CALISMA/emare_messenger.py {DERVIS_ADI} oku
 - ✅ Mesaj yoksa veya sadece eski mesajlar varsa → Sessizce devam et
 
 **Bu adımı atlamak yasaktır.** Oturumda bir kez yapılması yeterlidir.
+
+### 🔔 Push Bildirim Kontrolü
+
+Eğer `.github/YENI_MESAJ.md` dosyası varsa, içeriğini oku ve kullanıcıya bildir.
+Bu dosya GitHub Actions tarafından yeni mesaj geldiğinde otomatik oluşturulur.
+
+Mesajı okuduktan sonra dosyayı sil:
+```bash
+rm -f .github/YENI_MESAJ.md && git add -A && git commit -m "docs: mesaj okundu" && git push
+```
 
 ## Oturum Başlangıç Protokolü (İLK FIRSATTA)
 
